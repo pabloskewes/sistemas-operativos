@@ -1,0 +1,46 @@
+Sistema operativo utilizado
+Linux pabloskewes-Inspiron-5505 6.2.0-26-generic #26~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Jul 13 16:27:29 UTC 2 x86_64 x86_64 x86_64 GNU/Linux
+==== run-san ====
+gcc -g -DSAN=1 -fsanitize=address -fsanitize=undefined -Wall -Werror -std=c18  test-integral.c integral.c -lm -lpthread -o integral.bin-san
+./integral.bin-san
+Calculando secuencialmente 2 veces
+integral en [-0.200000,0.600000] con 20000 intervalos= 0.214813
+integral= 0.214813, valor esperado= 0.214813, error= 0.000000, tiempo= 2862
+integral en [-0.200000,0.600000] con 20000 intervalos= 0.214813
+integral= 0.214813, valor esperado= 0.214813, error= 0.000000, tiempo= 2865
+Calculando en paralelo hasta 1 veces
+integral en [-0.200000,0.000000] con 5000 intervalos= 0.004913
+integral en [0.000000,0.200000] con 5000 intervalos= 0.042758
+integral en [0.200000,0.400000] con 5000 intervalos= 0.073853
+integral en [0.400000,0.600000] con 5000 intervalos= 0.093288
+integral par= 0.214813, valor esperado= 0.214813, error= 0.000000, tiempo= 772, speedup= 3.711140
+Felicitaciones: Su tarea funciona.
+==== run-g ====
+gcc -g -Wall -Werror -std=c18  test-integral.c integral.c -lm -lpthread -o integral.bin-g
+./integral.bin-g
+Calculando secuencialmente 2 veces
+integral en [-0.200000,0.600000] con 20000 intervalos= 0.214813
+integral= 0.214813, valor esperado= 0.214813, error= 0.000000, tiempo= 2637
+integral en [-0.200000,0.600000] con 20000 intervalos= 0.214813
+integral= 0.214813, valor esperado= 0.214813, error= 0.000000, tiempo= 2605
+Calculando en paralelo hasta 1 veces
+integral en [-0.200000,0.000000] con 5000 intervalos= 0.004913
+integral en [0.000000,0.200000] con 5000 intervalos= 0.042758
+integral en [0.200000,0.400000] con 5000 intervalos= 0.073853
+integral en [0.400000,0.600000] con 5000 intervalos= 0.093288
+integral par= 0.214813, valor esperado= 0.214813, error= 0.000000, tiempo= 701, speedup= 3.716120
+Felicitaciones: Su tarea funciona.
+==== run ====
+gcc -O -DOPT=1 -Wall -Werror -std=c18  test-integral.c integral.c -lm -lpthread -o integral.bin
+Calculando secuencialmente 2 veces
+integral en [-0.200000,0.600000] con 20000 intervalos= 0.214813
+integral= 0.214813, valor esperado= 0.214813, error= 0.000000, tiempo= 1736
+integral en [-0.200000,0.600000] con 20000 intervalos= 0.214813
+integral= 0.214813, valor esperado= 0.214813, error= 0.000000, tiempo= 1700
+Calculando en paralelo hasta 4 veces
+integral en [-0.200000,0.000000] con 5000 intervalos= 0.004913
+integral en [0.000000,0.200000] con 5000 intervalos= 0.042758
+integral en [0.200000,0.400000] con 5000 intervalos= 0.073853
+integral en [0.400000,0.600000] con 5000 intervalos= 0.093288
+integral par= 0.214813, valor esperado= 0.214813, error= 0.000000, tiempo= 480, speedup= 3.541667
+Felicitaciones: el speedup es mejor que 1.5x.  Su tarea funciona.
