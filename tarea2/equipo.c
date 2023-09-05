@@ -46,9 +46,9 @@ condiciones.
 #define TEAM_SIZE 5
 
 char **equipo;
-int n_jugadores = 0;
+int n_jugadores;
 char **equipo_completo;
-int equipo_completo_listo = 0;
+int equipo_completo_listo;
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
@@ -106,6 +106,8 @@ char **hay_equipo(char *nombre) {
 void init_equipo(void) {
     equipo = (char **)malloc(TEAM_SIZE * sizeof(char *));
     equipo_completo = (char **)malloc(TEAM_SIZE * sizeof(char *));
+    n_jugadores = 0;
+    equipo_completo_listo = 0;
 }
 
 void end_equipo(void) {
