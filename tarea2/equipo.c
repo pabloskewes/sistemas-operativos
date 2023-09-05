@@ -54,29 +54,8 @@ pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 char **hay_equipo(char *nombre) {
     pthread_mutex_lock(&mutex);
 
-    // Si al comenzar, el equipo está completo, se libera todo
-    if (n_jugadores == TEAM_SIZE) {
-        printf("Equipo completo, liberando todo\n");
-        n_jugadores = 0;
-        equipo = (char **)malloc(TEAM_SIZE * sizeof(char *));
-        print_equipo(equipo);
-    }
-
-    // Se agrega el jugador al equipo
     equipo[n_jugadores] = nombre;
-    printf("Jugador %s agregado al equipo\n", nombre);
-    print_equipo(equipo);
-
-    // Se incrementa el número de jugadores
     n_jugadores++;
-
-    // Si el número de jugadores es menor al tamaño del equipo, se espera
-    while (n_jugadores < TEAM_SIZE) {
-        pthread_cond_wait(&cond, &mutex);
-    }
-
-    // Se notifica a todos los jugadores que el equipo está completo
-    pthread_cond_broadcast(&cond);
 
     pthread_mutex_unlock(&mutex);
     return equipo;
