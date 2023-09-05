@@ -44,11 +44,15 @@ condiciones.
 #include "pss.h"
 
 #define TEAM_SIZE 5
+#define DEBUG 1
 
 char **equipo;
-int n_jugadores;
 char **equipo_completo;
-int equipo_completo_listo;
+int n_jugadores;
+int n_jugadores_check;
+
+long long jugador_counter;
+long long equipo_counter;
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
@@ -56,48 +60,61 @@ pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 char **hay_equipo(char *nombre) {
     pthread_mutex_lock(&mutex);
 
-    print_state(nombre, "entra al mutex");
+    int id_jugador = jugador_counter;
+    int equipo_de_jugador = id_jugador / TEAM_SIZE;
+    jugador_counter++;
 
-    if (n_jugadores == TEAM_SIZE) {
-        print_state(nombre, "n_jugadores == TEAM_SIZE");
+    print_state(nombre, "entra a al mutex", id_jugador, equipo_de_jugador);
 
-        equipo_completo_listo = 0;
-        reset_team(equipo);
-        n_jugadores = 0;
-
-        print_state(nombre, "se resetea equipo y n_jugadores");
-    }
-
-    // print_state(nombre,
-    //             "(ANTES) se inserta en equipo y se aumenta n_jugadores");
-    equipo[n_jugadores] = nombre;
-    n_jugadores++;
-    print_state(nombre, "(DESPUES) se inserta en equipo y se aumenta "
-                        "n_jugadores");
-
-    while (n_jugadores < TEAM_SIZE) {
-        print_state(nombre, "entra al wait");
+    // if (equipo_de_jugador > equipo_counter) {
+    //     reset_team(equipo);
+    // }
+    while (equipo_de_jugador > equipo_counter || n_jugadores_check > 0) {
+        print_state(nombre,
+                    "es un jugador de un equipo siguiente, por lo que "
+                    "espera a que se forme el equipo anterior",
+                    id_jugador, equipo_de_jugador);
         pthread_cond_wait(&cond, &mutex);
     }
-    print_state(nombre, "sale del wait (o no entró)");
 
-    if (n_jugadores == TEAM_SIZE && !equipo_completo_listo) {
+    if (n_jugadores == TEAM_SIZE) {
         print_state(nombre,
-                    "n_jugadores == TEAM_SIZE && !equipo_completo_listo");
-
-        equipo_completo_listo = 1;
-        equipo_completo = copy_team(equipo);
-        // reset_team(equipo);
-        // n_jugadores = 0;
-
-        print_state(nombre, "se copia equipo a equipo_completo y se marca "
-                            "equipo_completo_listo");
+                    "es el primer jugador del equipo, resetea n_jugadores a 0",
+                    id_jugador, equipo_de_jugador);
+        reset_team(equipo);
+        n_jugadores = 0;
     }
 
-    print_state(nombre, "se despierta a todos los threads");
-    pthread_cond_broadcast(&cond);
+    equipo[id_jugador % TEAM_SIZE] = nombre;
+    n_jugadores++;
+    print_state(nombre, "se agregó al equipo", id_jugador, equipo_de_jugador);
 
-    print_state(nombre, "sale del mutex");
+    while (n_jugadores < TEAM_SIZE) {
+        print_state(nombre, "espera a que se complete el equipo", id_jugador,
+                    equipo_de_jugador);
+        pthread_cond_wait(&cond, &mutex);
+    }
+
+    print_state(nombre, "sale del wait", id_jugador, equipo_de_jugador);
+
+    if (id_jugador == (equipo_counter + 1) * TEAM_SIZE - 1) {
+        print_state(nombre, "es el último jugador del equipo", id_jugador,
+                    equipo_de_jugador);
+        equipo_completo = copy_team(equipo);
+        reset_team(equipo);
+        equipo_counter++;
+        n_jugadores_check = TEAM_SIZE;
+        print_state(nombre,
+                    "copió el equipo, lo reseteó y aumentó el counter de "
+                    "equipos",
+                    id_jugador, equipo_de_jugador);
+    }
+
+    print_state(nombre, "despierta a los demás jugadores", id_jugador,
+                equipo_de_jugador);
+
+    --n_jugadores_check;
+    pthread_cond_broadcast(&cond);
 
     pthread_mutex_unlock(&mutex);
     return equipo_completo;
@@ -107,11 +124,14 @@ void init_equipo(void) {
     equipo = (char **)malloc(TEAM_SIZE * sizeof(char *));
     equipo_completo = (char **)malloc(TEAM_SIZE * sizeof(char *));
     n_jugadores = 0;
-    equipo_completo_listo = 0;
+    jugador_counter = 0;
+    equipo_counter = 0;
+    n_jugadores_check = 0;
 }
 
 void end_equipo(void) {
     free(equipo);
+    free(equipo_completo);
 }
 
 void print_equipo(char **equipo_to_print) {
@@ -121,15 +141,27 @@ void print_equipo(char **equipo_to_print) {
     printf("\n");
 }
 
-void print_state(char *nombre, char *message) {
+#if DEBUG
+void print_state(char *nombre, char *message, long long id_jugador,
+                 long long id_equipo) {
     printf("\n");
     printf("%s: %s\n", nombre, message);
-    printf("nombre: %s | n_jugadores: %d | equipo_completo_listo: %d | equipo: ", nombre, n_jugadores, equipo_completo_listo);
+    printf(
+        "nombre: %s | n_jugadores: %d | id_jugador: %lld | id_equipo: %lld\n",
+        nombre, n_jugadores, id_jugador, id_equipo);
+    printf("equipo: ");
     print_equipo(equipo);
     printf("equipo_completo global: ");
     print_equipo(equipo_completo);
+    printf("current equipo: %lld\n", equipo_counter);
+    printf("n_jugadores_check: %d\n", n_jugadores_check);
     printf("\n");
 }
+#else
+void print_state(char *nombre, char *message, long long id_jugador,
+                 long long id_equipo) {
+}
+#endif
 
 int full_team(char **equipo) {
     for (int i = 0; i < TEAM_SIZE; i++) {
