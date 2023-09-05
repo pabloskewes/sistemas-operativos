@@ -44,11 +44,10 @@ condiciones.
 #include "pss.h"
 
 #define TEAM_SIZE 5
+#define DEBUG 1
 
 char **equipo;
 int n_jugadores;
-char **equipo_completo;
-int equipo_completo_listo;
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
@@ -58,56 +57,12 @@ char **hay_equipo(char *nombre) {
 
     print_state(nombre, "entra al mutex");
 
-    if (n_jugadores == TEAM_SIZE) {
-        print_state(nombre, "n_jugadores == TEAM_SIZE");
-
-        equipo_completo_listo = 0;
-        reset_team(equipo);
-        n_jugadores = 0;
-
-        print_state(nombre, "se resetea equipo y n_jugadores");
-    }
-
-    // print_state(nombre,
-    //             "(ANTES) se inserta en equipo y se aumenta n_jugadores");
-    equipo[n_jugadores] = nombre;
-    n_jugadores++;
-    print_state(nombre, "(DESPUES) se inserta en equipo y se aumenta "
-                        "n_jugadores");
-
-    while (n_jugadores < TEAM_SIZE) {
-        print_state(nombre, "entra al wait");
-        pthread_cond_wait(&cond, &mutex);
-    }
-    print_state(nombre, "sale del wait (o no entró)");
-
-    if (n_jugadores == TEAM_SIZE && !equipo_completo_listo) {
-        print_state(nombre,
-                    "n_jugadores == TEAM_SIZE && !equipo_completo_listo");
-
-        equipo_completo_listo = 1;
-        equipo_completo = copy_team(equipo);
-        // reset_team(equipo);
-        // n_jugadores = 0;
-
-        print_state(nombre, "se copia equipo a equipo_completo y se marca "
-                            "equipo_completo_listo");
-    }
-
-    print_state(nombre, "se despierta a todos los threads");
-    pthread_cond_broadcast(&cond);
-
-    print_state(nombre, "sale del mutex");
-
     pthread_mutex_unlock(&mutex);
-    return equipo_completo;
+    return NULL;
 }
 
 void init_equipo(void) {
     equipo = (char **)malloc(TEAM_SIZE * sizeof(char *));
-    equipo_completo = (char **)malloc(TEAM_SIZE * sizeof(char *));
-    n_jugadores = 0;
-    equipo_completo_listo = 0;
 }
 
 void end_equipo(void) {
@@ -121,44 +76,15 @@ void print_equipo(char **equipo_to_print) {
     printf("\n");
 }
 
+#if DEBUG
 void print_state(char *nombre, char *message) {
     printf("\n");
     printf("%s: %s\n", nombre, message);
-    printf("nombre: %s | n_jugadores: %d | equipo_completo_listo: %d | equipo: ", nombre, n_jugadores, equipo_completo_listo);
+    printf("nombre: %s | n_jugadores: %d | equipo: ", nombre, n_jugadores);
     print_equipo(equipo);
-    printf("equipo_completo global: ");
-    print_equipo(equipo_completo);
     printf("\n");
 }
-
-int full_team(char **equipo) {
-    for (int i = 0; i < TEAM_SIZE; i++) {
-        if (equipo[i] == NULL) {
-            return 0;
-        }
-    }
-    return 1;
+#else
+void print_state(char *nombre, char *message) {
 }
-
-int empty_team(char **equipo) {
-    for (int i = 0; i < TEAM_SIZE; i++) {
-        if (equipo[i] != NULL) {
-            return 0;
-        }
-    }
-    return 1;
-}
-
-void reset_team(char **equipo) {
-    for (int i = 0; i < TEAM_SIZE; i++) {
-        equipo[i] = NULL;
-    }
-}
-
-char **copy_team(char **equipo) {
-    char **new_team = (char **)malloc(TEAM_SIZE * sizeof(char *));
-    for (int i = 0; i < TEAM_SIZE; i++) {
-        new_team[i] = equipo[i];
-    }
-    return new_team;
-}
+#endif
