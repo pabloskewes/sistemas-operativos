@@ -55,67 +55,49 @@ pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 
 char **hay_equipo(char *nombre) {
     pthread_mutex_lock(&mutex);
-    printf("Jugador %s entra al mutex, se registran %d jugadores\n", nombre,
-           n_jugadores);
-    printf("equipo global: [1]  ");
-    print_equipo(equipo);
+
+    print_state(nombre, "entra al mutex");
 
     if (n_jugadores == TEAM_SIZE) {
-        printf("Jugador %s llega a un equipo completo, se resetea 'equipo' "
-               "pero no 'equipo_completo' ya que esta variable se retorna\n",
-               nombre);
+        print_state(nombre, "n_jugadores == TEAM_SIZE");
 
         equipo_completo_listo = 0;
         reset_team(equipo);
         n_jugadores = 0;
-        printf("equipo global: [2]  ");
-        print_equipo(equipo);
+
+        print_state(nombre, "se resetea equipo y n_jugadores");
     }
 
-    printf("Jugador %s se registra en el equipo y aumenta n_jugadores de %d a "
-           "%d\n",
-           nombre, n_jugadores, n_jugadores + 1);
+    // print_state(nombre,
+    //             "(ANTES) se inserta en equipo y se aumenta n_jugadores");
     equipo[n_jugadores] = nombre;
     n_jugadores++;
-    printf("equipo global: [3]  ");
-    print_equipo(equipo);
+    print_state(nombre, "(DESPUES) se inserta en equipo y se aumenta "
+                        "n_jugadores");
 
-    while (n_jugadores < TEAM_SIZE || !equipo_completo_listo) {
-        printf("Jugador %s debe esperar a que se complete el equipo\n ya que "
-               "n_jugadores es %d < %d\n",
-               nombre, n_jugadores, TEAM_SIZE);
+    while (n_jugadores < TEAM_SIZE) {
+        print_state(nombre, "entra al wait");
         pthread_cond_wait(&cond, &mutex);
     }
-    printf("Jugador %s sale del wait, n_jugadores es %d\n", nombre,
-           n_jugadores);
-    printf("equipo global: [4]  ");
-    print_equipo(equipo);
+    print_state(nombre, "sale del wait (o no entró)");
 
     if (n_jugadores == TEAM_SIZE && !equipo_completo_listo) {
-        // Si quiere entrar el último jugador, copiar equipo en equipo_completo
-        // para que todos los jugadores lo tengan y lo retornen
-        printf("Jugador %s es el último en llegar, copia 'equipo' en "
-               "'equipo_completo' y resetea 'equipo' y 'n_jugadores' y "
-               "despierta a todos los jugadores\n",
-               nombre);
+        print_state(nombre,
+                    "n_jugadores == TEAM_SIZE && !equipo_completo_listo");
 
         equipo_completo_listo = 1;
         equipo_completo = copy_team(equipo);
         // reset_team(equipo);
         // n_jugadores = 0;
 
-        printf("equipo global: [5]  ");
-        print_equipo(equipo);
-        printf("equipo_completo global: [1]  ");
-        print_equipo(equipo_completo);
+        print_state(nombre, "se copia equipo a equipo_completo y se marca "
+                            "equipo_completo_listo");
     }
+
+    print_state(nombre, "se despierta a todos los threads");
     pthread_cond_broadcast(&cond);
 
-    printf("Jugador %s sale del mutex, n_jugadores=%d\n", nombre, n_jugadores);
-    printf("equipo global: [6]  ");
-    print_equipo(equipo);
-    printf("equipo_completo global: [2]  ");
-    print_equipo(equipo_completo);
+    print_state(nombre, "sale del mutex");
 
     pthread_mutex_unlock(&mutex);
     return equipo_completo;
@@ -123,23 +105,24 @@ char **hay_equipo(char *nombre) {
 
 void init_equipo(void) {
     equipo = (char **)malloc(TEAM_SIZE * sizeof(char *));
+    equipo_completo = (char **)malloc(TEAM_SIZE * sizeof(char *));
 }
 
 void end_equipo(void) {
     free(equipo);
 }
 
-void print_equipo(char **equipo) {
+void print_equipo(char **equipo_to_print) {
     for (int i = 0; i < TEAM_SIZE; i++) {
-        printf("%s ", equipo[i]);
+        printf("%s ", equipo_to_print[i]);
     }
     printf("\n");
 }
 
 void print_state(char *nombre, char *message) {
-    printf("Jugador %s: %s\n n_jugadores=%d\n equipo_completo_listo=%d\n "
-           "equipo global: ",
-           nombre, message, n_jugadores, equipo_completo_listo);
+    printf("\n");
+    printf("%s: %s\n", nombre, message);
+    printf("nombre: %s | n_jugadores: %d | equipo_completo_listo: %d | equipo: ", nombre, n_jugadores, equipo_completo_listo);
     print_equipo(equipo);
     printf("equipo_completo global: ");
     print_equipo(equipo_completo);
