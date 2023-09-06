@@ -34,6 +34,15 @@ Restricciones: Para programar las funciones solicitadas Ud. debe usar
 un mutex y una sola condición. No está permitido usar múltiples
 condiciones.
 
+Cómo resolver:
+Tipo que tenias que definir un char** = equipo
+Eso despues dentro de la funcion le haces una referencia local
+Tipo char** mi_equipo=equipo
+Y los dos hint mas brigidos es que tienes que hacer una condicion cuando son 5
+en el equipo haces que la variable global sea Null, tipo equipo = NULL Y el
+último es que la wea no retorna hasta que mi_equipo = equipo Eso dentro de un
+while
+
 */
 
 #include <pthread.h>
@@ -44,7 +53,7 @@ condiciones.
 #include "pss.h"
 
 #define TEAM_SIZE 5
-#define DEBUG 1
+#define DEBUG 0
 
 char **equipo;
 int n_jugadores;
@@ -55,10 +64,35 @@ pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 char **hay_equipo(char *nombre) {
     pthread_mutex_lock(&mutex);
 
-    print_state(nombre, "entra al mutex");
+    if (n_jugadores == TEAM_SIZE) {
+        // Jugador 6 entra y aloja memoria para el equipo
+        equipo = malloc(TEAM_SIZE * sizeof(char *));
+        n_jugadores = 0;
+    }
+    char **equipo_local = equipo;
 
+    equipo_local[n_jugadores] = nombre;
+    n_jugadores++;
+    print_state(nombre, "se agrega al equipo", equipo_local);
+
+    while (!full_team(equipo_local)) {
+        print_state(nombre, "espera a que se complete el equipo", equipo_local);
+        pthread_cond_wait(&cond, &mutex);
+    }
+
+    print_state(nombre, "sale del while o nunca entra", equipo_local);
+    if (n_jugadores == TEAM_SIZE) {
+        equipo = NULL;
+        print_state(nombre,
+                    "es el ultimo jugador del equipo, resetea equipo global y "
+                    "despierta a todos",
+                    equipo_local);
+        pthread_cond_broadcast(&cond);
+    }
+
+    print_state(nombre, "sale del mutex", equipo_local);
     pthread_mutex_unlock(&mutex);
-    return NULL;
+    return equipo_local;
 }
 
 void init_equipo(void) {
@@ -76,15 +110,32 @@ void print_equipo(char **equipo_to_print) {
     printf("\n");
 }
 
+int full_team(char **equipo) {
+    for (int i = 0; i < TEAM_SIZE; i++) {
+        if (equipo[i] == NULL) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
 #if DEBUG
-void print_state(char *nombre, char *message) {
+void print_state(char *nombre, char *message, char **equipo_local) {
     printf("\n");
     printf("%s: %s\n", nombre, message);
-    printf("nombre: %s | n_jugadores: %d | equipo: ", nombre, n_jugadores);
-    print_equipo(equipo);
+    printf("n_jugadores: %d\n", n_jugadores);
+    printf("equipo local: ");
+    print_equipo(equipo_local);
+    printf("equipo global: ");
+    if (equipo == NULL) {
+        printf("NULL");
+    } else {
+        print_equipo(equipo);
+    }
     printf("\n");
 }
 #else
-void print_state(char *nombre, char *message) {
+void print_state(char *nombre, char *message, char **equipo_local) {
 }
+
 #endif
