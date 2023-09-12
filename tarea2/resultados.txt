@@ -1,0 +1,150 @@
+Sistema operativo utilizado
+Linux pabloskewes-Inspiron-5505 6.2.0-32-generic #32~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Fri Aug 18 10:40:13 UTC 2 x86_64 x86_64 x86_64 GNU/Linux
+==== run-san ====
+gcc -g -DSAN=1 -fsanitize=address -fsanitize=undefined -Wall -Werror -std=c18  test-equipo.c equipo.c pss.c -lm -lpthread -o equipo.bin-san
+./equipo.bin-san
+Test 1: el del enunciado
+lanzando pedro
+lanzando juan
+lanzando alberto
+lanzando enrique
+lanzando diego
+lanzando jaime
+lanzando jorge
+lanzando andres
+lanzando jose
+lanzando luis
+terminado pedro
+terminado juan
+terminado alberto
+terminado enrique
+terminado diego
+terminado jaime
+terminado jorge
+terminado andres
+terminado jose
+terminado luis
+Test 1: aprobado
+Test 2: busca dataraces.
+Se demoro 20 segundos en mi computador con mi solucion.
+Si termina en segmentation fault podria significar que hubo un
+datarace en el que hay_equipo retorno un equipo incompleto y
+el test intento leer el nombre de un jugador que resulto ser
+una direccion invalida.
+
+Esperando
+Test 2: aprobado
+Total equipos = 20002
+Total jugadores = 100010
+Felicitaciones, su tarea paso todos los tests
+==== run-thr ====
+gcc -g -DSAN=1 -fsanitize=thread -Wall -Werror -std=c18  test-equipo.c equipo.c pss.c -lm -lpthread -o equipo.bin-thr
+./equipo.bin-thr
+Test 1: el del enunciado
+lanzando pedro
+lanzando juan
+lanzando alberto
+lanzando enrique
+lanzando diego
+lanzando jaime
+lanzando jorge
+lanzando andres
+lanzando jose
+lanzando luis
+terminado pedro
+terminado juan
+terminado alberto
+terminado enrique
+terminado diego
+terminado jaime
+terminado jorge
+terminado andres
+terminado jose
+terminado luis
+Test 1: aprobado
+Test 2: busca dataraces.
+Se demoro 20 segundos en mi computador con mi solucion.
+Si termina en segmentation fault podria significar que hubo un
+datarace en el que hay_equipo retorno un equipo incompleto y
+el test intento leer el nombre de un jugador que resulto ser
+una direccion invalida.
+
+Esperando
+Test 2: aprobado
+Total equipos = 20002
+Total jugadores = 100010
+Felicitaciones, su tarea paso todos los tests
+==== run-g ====
+gcc -g -Wall -Werror -std=c18  test-equipo.c equipo.c pss.c -lm -lpthread -o equipo.bin-g
+./equipo.bin-g
+Test 1: el del enunciado
+lanzando pedro
+lanzando juan
+lanzando alberto
+lanzando enrique
+lanzando diego
+lanzando jaime
+lanzando jorge
+lanzando andres
+lanzando jose
+lanzando luis
+terminado pedro
+terminado juan
+terminado alberto
+terminado enrique
+terminado diego
+terminado jaime
+terminado jorge
+terminado andres
+terminado jose
+terminado luis
+Test 1: aprobado
+Test 2: busca dataraces.
+Se demoro 20 segundos en mi computador con mi solucion.
+Si termina en segmentation fault podria significar que hubo un
+datarace en el que hay_equipo retorno un equipo incompleto y
+el test intento leer el nombre de un jugador que resulto ser
+una direccion invalida.
+
+Esperando
+Test 2: aprobado
+Total equipos = 20002
+Total jugadores = 100010
+Felicitaciones, su tarea paso todos los tests
+==== run ====
+gcc -O -DOPT=1 -Wall -Werror -std=c18  test-equipo.c equipo.c pss.c -lm -lpthread -o equipo.bin
+./equipo.bin
+Test 1: el del enunciado
+lanzando pedro
+lanzando juan
+lanzando alberto
+lanzando enrique
+lanzando diego
+lanzando jaime
+lanzando jorge
+lanzando andres
+lanzando jose
+lanzando luis
+terminado pedro
+terminado juan
+terminado alberto
+terminado enrique
+terminado diego
+terminado jaime
+terminado jorge
+terminado andres
+terminado jose
+terminado luis
+Test 1: aprobado
+Test 2: busca dataraces.
+Se demoro 20 segundos en mi computador con mi solucion.
+Si termina en segmentation fault podria significar que hubo un
+datarace en el que hay_equipo retorno un equipo incompleto y
+el test intento leer el nombre de un jugador que resulto ser
+una direccion invalida.
+
+Esperando
+Test 2: aprobado
+Total equipos = 500002
+Total jugadores = 2500010
+Felicitaciones, su tarea paso todos los tests
