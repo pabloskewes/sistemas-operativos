@@ -1,6 +1,5 @@
-#include <nthread.h>
-
-#include "pss.h"
+#define _XOPEN_SOURCE 500
+#include "nthread-impl.h"
 #include "h2o.h"
 
 ... defina aca sus variables globales ...
