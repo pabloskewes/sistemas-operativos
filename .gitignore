@@ -1,0 +1,6 @@
+# editor
+.vscode
+# build
+*.bin*
+*.o
+*.out
