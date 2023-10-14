@@ -1,0 +1,99 @@
+Sistema operativo utilizado
+Linux pabloskewes-Inspiron-5505 6.2.0-34-generic #34~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Sep  7 13:12:03 UTC 2 x86_64 x86_64 x86_64 GNU/Linux
+==== run-san ====
+gcc -g -DSAN=1 -fsanitize=address -fsanitize=undefined -Wall -Werror -pedantic -DNTHREADS -std=c18 -InKernel  test-h2o.c h2o.c nKernel/nthread.c nKernel/nutil.c nKernel/ntime.c nKernel/pss.c nKernel/sched-fcfs.c nKernel/sched-rr.c nKernel/sched-pri-1core.c nKernel/sched-fcfs-1core.c nKernel/sem.c nKernel/mutex-cond.c nKernel/nmsgs.c nKernel/nsystem.c -lm -lpthread -lrt -o h2o.bin-san
+--------------------------------------------
+./h2o.bin-san
+Info: setting single-core FCFS scheduling
+Test de prueba de semantica
+Test aprobado
+Test del orden de formacion de las moleculas
+Test aprobado
+Test de robustez
+Test aprobado
+Felicitaciones: todos los tests aprobados
+Info: Number of cores = 1
+Info: total context changes = 20148
+Info: Implicit context changes = 0
+--------------------------------------------
+./h2o.bin-san -slice 1
+Info: setting 1-core round robin scheduling
+Test de prueba de semantica
+Test aprobado
+Test del orden de formacion de las moleculas
+Test aprobado
+Test de robustez
+Test aprobado
+Felicitaciones: todos los tests aprobados
+Info: Number of cores = 1
+Info: total context changes = 20301
+Info: Implicit context changes = 1
+==== run-g ====
+gcc -g -Wall -Werror -pedantic -DNTHREADS -std=c18 -InKernel  test-h2o.c h2o.c nKernel/nthread.c nKernel/nutil.c nKernel/ntime.c nKernel/pss.c nKernel/sched-fcfs.c nKernel/sched-rr.c nKernel/sched-pri-1core.c nKernel/sched-fcfs-1core.c nKernel/sem.c nKernel/mutex-cond.c nKernel/nmsgs.c nKernel/nsystem.c -lm -lpthread -lrt -o h2o.bin-g
+--------------------------------------------
+./h2o.bin-g
+Info: setting single-core FCFS scheduling
+Test de prueba de semantica
+Test aprobado
+Test del orden de formacion de las moleculas
+Test aprobado
+Test de robustez
+Test aprobado
+Felicitaciones: todos los tests aprobados
+Info: Number of cores = 1
+Info: total context changes = 20148
+Info: Implicit context changes = 0
+--------------------------------------------
+./h2o.bin-g -slice 1 -ncores 4
+Info: setting 4-core round robin scheduling
+Test de prueba de semantica
+Test aprobado
+Test del orden de formacion de las moleculas
+Test aprobado
+Test de robustez
+Test aprobado
+Felicitaciones: todos los tests aprobados
+Info: Number of cores = 4
+Info: total context changes = 43095
+Info: Implicit context changes = 3
+==== run ====
+gcc -g -O -DOPT=1 -Wall -Werror -pedantic -DNTHREADS -std=c18 -InKernel  test-h2o.c h2o.c nKernel/nthread.c nKernel/nutil.c nKernel/ntime.c nKernel/pss.c nKernel/sched-fcfs.c nKernel/sched-rr.c nKernel/sched-pri-1core.c nKernel/sched-fcfs-1core.c nKernel/sem.c nKernel/mutex-cond.c nKernel/nmsgs.c nKernel/nsystem.c -lm -lpthread -lrt -o h2o.bin
+--------------------------------------------
+./h2o.bin
+Info: setting single-core FCFS scheduling
+Test de prueba de semantica
+Test aprobado
+Test del orden de formacion de las moleculas
+Test aprobado
+Test de robustez
+Test aprobado
+Felicitaciones: todos los tests aprobados
+Info: Number of cores = 1
+Info: total context changes = 50238
+Info: Implicit context changes = 0
+--------------------------------------------
+./h2o.bin -ncores 4
+Info: setting 4-core FCFS scheduling
+Test de prueba de semantica
+Test aprobado
+Test del orden de formacion de las moleculas
+Test aprobado
+Test de robustez
+Test aprobado
+Felicitaciones: todos los tests aprobados
+Info: Number of cores = 4
+Info: total context changes = 103848
+Info: Implicit context changes = 0
+--------------------------------------------
+./h2o.bin -slice 1 -ncores 4
+Info: setting 4-core round robin scheduling
+Test de prueba de semantica
+Test aprobado
+Test del orden de formacion de las moleculas
+Test aprobado
+Test de robustez
+Test aprobado
+Felicitaciones: todos los tests aprobados
+Info: Number of cores = 4
+Info: total context changes = 107608
+Info: Implicit context changes = 4
