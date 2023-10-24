@@ -16,6 +16,13 @@ void endH2O(void) {
     nth_destroyQueue(hydroQ);
 }
 
+void funcion(nThread th) {
+    if (th->status == WAIT_H2O_TIMEOUT) {
+        nth_delQueue(oxyQ, th);
+        th->ptr = NULL;
+    }
+}
+
 H2O *nCombineOxy(Oxygen *o, int timeout) {
     // Para crear la molecula de agua invoque makeH2O(h1, h2, o)
     START_CRITICAL;
@@ -39,8 +46,9 @@ H2O *nCombineOxy(Oxygen *o, int timeout) {
         this_th->ptr = o;
         nth_putBack(oxyQ, this_th);
         if (timeout > 0) {
-            // TODO: Implementar timeout
+            nth_programTimer(timeout * 1000000LL, funcion);
             suspend(WAIT_H2O_TIMEOUT);
+
         } else {
             suspend(WAIT_H2O);
         }
@@ -72,7 +80,7 @@ H2O *nCombineHydro(Hydrogen *h) {
     } else {
         this_th->ptr = h;
         nth_putBack(hydroQ, this_th);
-        suspend(WAIT_PUB);
+        suspend(WAIT_H2O);
     }
 
     schedule();
