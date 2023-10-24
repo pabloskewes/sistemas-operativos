@@ -1,0 +1,393 @@
+Sistema operativo utilizado
+Linux pabloskewes-Inspiron-5505 6.2.0-35-generic #35~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Fri Oct  6 10:23:26 UTC 2 x86_64 x86_64 x86_64 GNU/Linux
+==== run-san ====
+gcc -g -DSAN=1 -fsanitize=address -fsanitize=undefined -Wall -Werror -pedantic -DNTHREADS -std=c18 -InKernel  test-h2o.c h2o.c nKernel/nthread.c nKernel/nutil.c nKernel/ntime.c nKernel/pss.c nKernel/sched-fcfs.c nKernel/sched-rr.c nKernel/sched-pri-1core.c nKernel/sched-fcfs-1core.c nKernel/sem.c nKernel/mutex-cond.c nKernel/nmsgs.c nKernel/nsystem.c -lm -lpthread -lrt -o h2o.bin-san
+--------------------------------------------
+./h2o.bin-san
+Info: setting single-core FCFS scheduling
+Test de prueba de semantica sin timeouts
+Test aprobado
+Test de prueba de semantica de timeouts
+
+Verifica que el timeout expire en 300 miliseg. 
+con nCombineOxy cuando no hay ningun hidrogeno
+Creando atomo de oxigeno con timeout 300 en T=0
+El timeout fue de 301 milisegundos
+Aprobado
+
+Como antes, pero con un hidrogeno
+Creando atomo de hidrogeno
+Creando atomo de oxigeno con timeout 300 en T=0
+El timeout fue de 301 milisegundos
+Aprobado
+
+Verifica que timeout de 600 milisegundos no expire
+Debe formar la molecula en 300 milisegundos
+Creando atomo de oxigeno con timeout 600 en T=0
+Creando atomo de hidrogeno en T=300
+Oxigeno formo molecula despues de 301 milisegundos
+Aprobado
+
+Verifica que el timeout expire con el primer oxigeno
+pero no expire con el segundo oxigeno
+Creando atomo de hidrogeno
+Creando 1er. atomo de oxigeno con timeout 300 en T=0
+Creando 2do. atomo de oxigeno con timeout 1000 en T=100
+El timeout del primer oxigeno fue de 300 milisegundos
+Creando atomo de hidrogeno en T=401
+El segundo oxigeno formo molecula despues de 301 milisegundos
+Aprobado
+
+Verifica que el timeout expire con el segundo oxigeno
+pero no con el primer oxigeno
+Creando atomo de hidrogeno
+Creando 1er. atomo de oxigeno con timeout 1000 en T=0
+Creando 2do. atomo de oxigeno con timeout 300 en T=100
+El timeout del segundo oxigeno fue de 301 milisegundos
+Creando atomo de hidrogeno en T=501
+El primer oxigeno formo molecula despues de 502 milisegundos
+Aprobado
+Test del orden de formacion de las moleculas
+Test aprobado
+Test de robustez sin timeout
+Test aprobado
+Test de robustez con timeouts que no expiran
+Test aprobado
+Felicitaciones: todos los tests aprobados
+Info: Number of cores = 1
+Info: total context changes = 40240
+Info: Implicit context changes = 0
+--------------------------------------------
+./h2o.bin-san -slice 1
+Info: setting 1-core round robin scheduling
+Test de prueba de semantica sin timeouts
+Test aprobado
+Test de prueba de semantica de timeouts
+
+Verifica que el timeout expire en 300 miliseg. 
+con nCombineOxy cuando no hay ningun hidrogeno
+Creando atomo de oxigeno con timeout 300 en T=0
+El timeout fue de 301 milisegundos
+Aprobado
+
+Como antes, pero con un hidrogeno
+Creando atomo de hidrogeno
+Creando atomo de oxigeno con timeout 300 en T=0
+El timeout fue de 301 milisegundos
+Aprobado
+
+Verifica que timeout de 600 milisegundos no expire
+Debe formar la molecula en 300 milisegundos
+Creando atomo de oxigeno con timeout 600 en T=0
+Creando atomo de hidrogeno en T=301
+Oxigeno formo molecula despues de 301 milisegundos
+Aprobado
+
+Verifica que el timeout expire con el primer oxigeno
+pero no expire con el segundo oxigeno
+Creando atomo de hidrogeno
+Creando 1er. atomo de oxigeno con timeout 300 en T=0
+Creando 2do. atomo de oxigeno con timeout 1000 en T=100
+El timeout del primer oxigeno fue de 300 milisegundos
+Creando atomo de hidrogeno en T=401
+El segundo oxigeno formo molecula despues de 301 milisegundos
+Aprobado
+
+Verifica que el timeout expire con el segundo oxigeno
+pero no con el primer oxigeno
+Creando atomo de hidrogeno
+Creando 1er. atomo de oxigeno con timeout 1000 en T=0
+Creando 2do. atomo de oxigeno con timeout 300 en T=100
+El timeout del segundo oxigeno fue de 301 milisegundos
+Creando atomo de hidrogeno en T=501
+El primer oxigeno formo molecula despues de 502 milisegundos
+Aprobado
+Test del orden de formacion de las moleculas
+Test aprobado
+Test de robustez sin timeout
+Test aprobado
+Test de robustez con timeouts que no expiran
+Test aprobado
+Felicitaciones: todos los tests aprobados
+Info: Number of cores = 1
+Info: total context changes = 40579
+Info: Implicit context changes = 4
+==== run-g ====
+gcc -g -Wall -Werror -pedantic -DNTHREADS -std=c18 -InKernel  test-h2o.c h2o.c nKernel/nthread.c nKernel/nutil.c nKernel/ntime.c nKernel/pss.c nKernel/sched-fcfs.c nKernel/sched-rr.c nKernel/sched-pri-1core.c nKernel/sched-fcfs-1core.c nKernel/sem.c nKernel/mutex-cond.c nKernel/nmsgs.c nKernel/nsystem.c -lm -lpthread -lrt -o h2o.bin-g
+--------------------------------------------
+./h2o.bin-g
+Info: setting single-core FCFS scheduling
+Test de prueba de semantica sin timeouts
+Test aprobado
+Test de prueba de semantica de timeouts
+
+Verifica que el timeout expire en 300 miliseg. 
+con nCombineOxy cuando no hay ningun hidrogeno
+Creando atomo de oxigeno con timeout 300 en T=0
+El timeout fue de 301 milisegundos
+Aprobado
+
+Como antes, pero con un hidrogeno
+Creando atomo de hidrogeno
+Creando atomo de oxigeno con timeout 300 en T=0
+El timeout fue de 300 milisegundos
+Aprobado
+
+Verifica que timeout de 600 milisegundos no expire
+Debe formar la molecula en 300 milisegundos
+Creando atomo de oxigeno con timeout 600 en T=0
+Creando atomo de hidrogeno en T=300
+Oxigeno formo molecula despues de 300 milisegundos
+Aprobado
+
+Verifica que el timeout expire con el primer oxigeno
+pero no expire con el segundo oxigeno
+Creando atomo de hidrogeno
+Creando 1er. atomo de oxigeno con timeout 300 en T=0
+Creando 2do. atomo de oxigeno con timeout 1000 en T=101
+El timeout del primer oxigeno fue de 301 milisegundos
+Creando atomo de hidrogeno en T=401
+El segundo oxigeno formo molecula despues de 300 milisegundos
+Aprobado
+
+Verifica que el timeout expire con el segundo oxigeno
+pero no con el primer oxigeno
+Creando atomo de hidrogeno
+Creando 1er. atomo de oxigeno con timeout 1000 en T=0
+Creando 2do. atomo de oxigeno con timeout 300 en T=100
+El timeout del segundo oxigeno fue de 301 milisegundos
+Creando atomo de hidrogeno en T=501
+El primer oxigeno formo molecula despues de 501 milisegundos
+Aprobado
+Test del orden de formacion de las moleculas
+Test aprobado
+Test de robustez sin timeout
+Test aprobado
+Test de robustez con timeouts que no expiran
+Test aprobado
+Felicitaciones: todos los tests aprobados
+Info: Number of cores = 1
+Info: total context changes = 40240
+Info: Implicit context changes = 0
+--------------------------------------------
+./h2o.bin-g -slice 1 -ncores 4
+Info: setting 4-core round robin scheduling
+Test de prueba de semantica sin timeouts
+Test aprobado
+Test de prueba de semantica de timeouts
+
+Verifica que el timeout expire en 300 miliseg. 
+con nCombineOxy cuando no hay ningun hidrogeno
+Creando atomo de oxigeno con timeout 300 en T=0
+El timeout fue de 300 milisegundos
+Aprobado
+
+Como antes, pero con un hidrogeno
+Creando atomo de hidrogeno
+Creando atomo de oxigeno con timeout 300 en T=0
+El timeout fue de 300 milisegundos
+Aprobado
+
+Verifica que timeout de 600 milisegundos no expire
+Debe formar la molecula en 300 milisegundos
+Creando atomo de oxigeno con timeout 600 en T=0
+Creando atomo de hidrogeno en T=300
+Oxigeno formo molecula despues de 301 milisegundos
+Aprobado
+
+Verifica que el timeout expire con el primer oxigeno
+pero no expire con el segundo oxigeno
+Creando atomo de hidrogeno
+Creando 1er. atomo de oxigeno con timeout 300 en T=0
+Creando 2do. atomo de oxigeno con timeout 1000 en T=100
+El timeout del primer oxigeno fue de 300 milisegundos
+Creando atomo de hidrogeno en T=400
+El segundo oxigeno formo molecula despues de 301 milisegundos
+Aprobado
+
+Verifica que el timeout expire con el segundo oxigeno
+pero no con el primer oxigeno
+Creando atomo de hidrogeno
+Creando 1er. atomo de oxigeno con timeout 1000 en T=0
+Creando 2do. atomo de oxigeno con timeout 300 en T=100
+El timeout del segundo oxigeno fue de 301 milisegundos
+Creando atomo de hidrogeno en T=501
+El primer oxigeno formo molecula despues de 501 milisegundos
+Aprobado
+Test del orden de formacion de las moleculas
+Test aprobado
+Test de robustez sin timeout
+Test aprobado
+Test de robustez con timeouts que no expiran
+Test aprobado
+Felicitaciones: todos los tests aprobados
+Info: Number of cores = 4
+Info: total context changes = 85415
+Info: Implicit context changes = 4
+==== run ====
+gcc -g -O -DOPT=1 -Wall -Werror -pedantic -DNTHREADS -std=c18 -InKernel  test-h2o.c h2o.c nKernel/nthread.c nKernel/nutil.c nKernel/ntime.c nKernel/pss.c nKernel/sched-fcfs.c nKernel/sched-rr.c nKernel/sched-pri-1core.c nKernel/sched-fcfs-1core.c nKernel/sem.c nKernel/mutex-cond.c nKernel/nmsgs.c nKernel/nsystem.c -lm -lpthread -lrt -o h2o.bin
+--------------------------------------------
+./h2o.bin
+Info: setting single-core FCFS scheduling
+Test de prueba de semantica sin timeouts
+Test aprobado
+Test de prueba de semantica de timeouts
+
+Verifica que el timeout expire en 300 miliseg. 
+con nCombineOxy cuando no hay ningun hidrogeno
+Creando atomo de oxigeno con timeout 300 en T=0
+El timeout fue de 301 milisegundos
+Aprobado
+
+Como antes, pero con un hidrogeno
+Creando atomo de hidrogeno
+Creando atomo de oxigeno con timeout 300 en T=0
+El timeout fue de 300 milisegundos
+Aprobado
+
+Verifica que timeout de 600 milisegundos no expire
+Debe formar la molecula en 300 milisegundos
+Creando atomo de oxigeno con timeout 600 en T=0
+Creando atomo de hidrogeno en T=300
+Oxigeno formo molecula despues de 301 milisegundos
+Aprobado
+
+Verifica que el timeout expire con el primer oxigeno
+pero no expire con el segundo oxigeno
+Creando atomo de hidrogeno
+Creando 1er. atomo de oxigeno con timeout 300 en T=0
+Creando 2do. atomo de oxigeno con timeout 1000 en T=100
+El timeout del primer oxigeno fue de 300 milisegundos
+Creando atomo de hidrogeno en T=400
+El segundo oxigeno formo molecula despues de 300 milisegundos
+Aprobado
+
+Verifica que el timeout expire con el segundo oxigeno
+pero no con el primer oxigeno
+Creando atomo de hidrogeno
+Creando 1er. atomo de oxigeno con timeout 1000 en T=0
+Creando 2do. atomo de oxigeno con timeout 300 en T=101
+El timeout del segundo oxigeno fue de 300 milisegundos
+Creando atomo de hidrogeno en T=501
+El primer oxigeno formo molecula despues de 501 milisegundos
+Aprobado
+Test del orden de formacion de las moleculas
+Test aprobado
+Test de robustez sin timeout
+Test aprobado
+Test de robustez con timeouts que no expiran
+Test aprobado
+Felicitaciones: todos los tests aprobados
+Info: Number of cores = 1
+Info: total context changes = 100420
+Info: Implicit context changes = 0
+--------------------------------------------
+./h2o.bin -ncores 4
+Info: setting 4-core FCFS scheduling
+Test de prueba de semantica sin timeouts
+Test aprobado
+Test de prueba de semantica de timeouts
+
+Verifica que el timeout expire en 300 miliseg. 
+con nCombineOxy cuando no hay ningun hidrogeno
+Creando atomo de oxigeno con timeout 300 en T=0
+El timeout fue de 301 milisegundos
+Aprobado
+
+Como antes, pero con un hidrogeno
+Creando atomo de hidrogeno
+Creando atomo de oxigeno con timeout 300 en T=0
+El timeout fue de 300 milisegundos
+Aprobado
+
+Verifica que timeout de 600 milisegundos no expire
+Debe formar la molecula en 300 milisegundos
+Creando atomo de oxigeno con timeout 600 en T=0
+Creando atomo de hidrogeno en T=301
+Oxigeno formo molecula despues de 301 milisegundos
+Aprobado
+
+Verifica que el timeout expire con el primer oxigeno
+pero no expire con el segundo oxigeno
+Creando atomo de hidrogeno
+Creando 1er. atomo de oxigeno con timeout 300 en T=0
+Creando 2do. atomo de oxigeno con timeout 1000 en T=100
+El timeout del primer oxigeno fue de 300 milisegundos
+Creando atomo de hidrogeno en T=401
+El segundo oxigeno formo molecula despues de 301 milisegundos
+Aprobado
+
+Verifica que el timeout expire con el segundo oxigeno
+pero no con el primer oxigeno
+Creando atomo de hidrogeno
+Creando 1er. atomo de oxigeno con timeout 1000 en T=0
+Creando 2do. atomo de oxigeno con timeout 300 en T=100
+El timeout del segundo oxigeno fue de 301 milisegundos
+Creando atomo de hidrogeno en T=501
+El primer oxigeno formo molecula despues de 501 milisegundos
+Aprobado
+Test del orden de formacion de las moleculas
+Test aprobado
+Test de robustez sin timeout
+Test aprobado
+Test de robustez con timeouts que no expiran
+Test aprobado
+Felicitaciones: todos los tests aprobados
+Info: Number of cores = 4
+Info: total context changes = 211782
+Info: Implicit context changes = 0
+--------------------------------------------
+./h2o.bin -slice 1 -ncores 4
+Info: setting 4-core round robin scheduling
+Test de prueba de semantica sin timeouts
+Test aprobado
+Test de prueba de semantica de timeouts
+
+Verifica que el timeout expire en 300 miliseg. 
+con nCombineOxy cuando no hay ningun hidrogeno
+Creando atomo de oxigeno con timeout 300 en T=0
+El timeout fue de 300 milisegundos
+Aprobado
+
+Como antes, pero con un hidrogeno
+Creando atomo de hidrogeno
+Creando atomo de oxigeno con timeout 300 en T=0
+El timeout fue de 300 milisegundos
+Aprobado
+
+Verifica que timeout de 600 milisegundos no expire
+Debe formar la molecula en 300 milisegundos
+Creando atomo de oxigeno con timeout 600 en T=0
+Creando atomo de hidrogeno en T=301
+Oxigeno formo molecula despues de 301 milisegundos
+Aprobado
+
+Verifica que el timeout expire con el primer oxigeno
+pero no expire con el segundo oxigeno
+Creando atomo de hidrogeno
+Creando 1er. atomo de oxigeno con timeout 300 en T=0
+Creando 2do. atomo de oxigeno con timeout 1000 en T=100
+El timeout del primer oxigeno fue de 300 milisegundos
+Creando atomo de hidrogeno en T=400
+El segundo oxigeno formo molecula despues de 300 milisegundos
+Aprobado
+
+Verifica que el timeout expire con el segundo oxigeno
+pero no con el primer oxigeno
+Creando atomo de hidrogeno
+Creando 1er. atomo de oxigeno con timeout 1000 en T=0
+Creando 2do. atomo de oxigeno con timeout 300 en T=100
+El timeout del segundo oxigeno fue de 300 milisegundos
+Creando atomo de hidrogeno en T=501
+El primer oxigeno formo molecula despues de 501 milisegundos
+Aprobado
+Test del orden de formacion de las moleculas
+Test aprobado
+Test de robustez sin timeout
+Test aprobado
+Test de robustez con timeouts que no expiran
+Test aprobado
+Felicitaciones: todos los tests aprobados
+Info: Number of cores = 4
+Info: total context changes = 216993
+Info: Implicit context changes = 14
