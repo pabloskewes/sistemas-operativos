@@ -71,6 +71,10 @@ H2O *nCombineHydro(Hydrogen *h) {
         nThread h_th = nth_getFront(hydroQ);
         Hydrogen *h2 = (Hydrogen *)h_th->ptr;
 
+        if (o_th->status == WAIT_H2O_TIMEOUT) {
+            nth_cancelThread(o_th);
+        }
+
         H2O *h2o = makeH2O(h2, h, o);
 
         o_th->ptr = h_th->ptr = this_th->ptr = h2o;
