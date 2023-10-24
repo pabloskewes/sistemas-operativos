@@ -1,7 +1,6 @@
-#include <nthread.h>
-
+#define _XOPEN_SOURCE 500
 #include "h2o.h"
-#include "pss.h"
+#include "nKernel/nthread-impl.h"
 
 // Variables globales
 NthQueue *oxyQ;
@@ -37,12 +36,13 @@ H2O *nCombineOxy(Oxygen *o, int timeout) {
         setReady(h2_th);
 
     } else {
+        this_th->ptr = o;
+        nth_putBack(oxyQ, this_th);
         if (timeout > 0) {
             // TODO: Implementar timeout
+            suspend(WAIT_H2O_TIMEOUT);
         } else {
-            this_th->ptr = o;
-            nth_putBack(oxyQ, this_th);
-            suspend(WAIT_PUB);
+            suspend(WAIT_H2O);
         }
     }
 
