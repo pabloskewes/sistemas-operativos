@@ -1,0 +1,34 @@
+# depslib dependency file v1.0
+1698187383 source:/home/lmateu/Cursos/CC41B/232/T6-sol/batch.c
+	<stdlib.h>
+	<unistd.h>
+	<string.h>
+	<stdio.h>
+	<pthread.h>
+	"pss.h"
+	"batch.h"
+	"spinlocks.h"
+
+1698183021 /home/lmateu/Cursos/CC41B/232/T6-sol/pss.h
+
+1698185386 /home/lmateu/Cursos/CC41B/232/T6-sol/batch.h
+
+1698183021 /home/lmateu/Cursos/CC41B/232/T6-sol/spinlocks.h
+
+1698183021 source:/home/lmateu/Cursos/CC41B/232/T6-sol/pss.c
+	<stdlib.h>
+	<stdint.h>
+	<string.h>
+	"pss.h"
+
+1698183021 source:/home/lmateu/Cursos/CC41B/232/T6-sol/spinlocks.c
+	<stdlib.h>
+	<unistd.h>
+	<string.h>
+	<stdio.h>
+	<pthread.h>
+	"pss.h"
+	"spinlocks.h"
+
+1698183021 source:/home/lmateu/Cursos/CC41B/232/T6-sol/swap-x86_64.s
+
