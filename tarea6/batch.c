@@ -11,6 +11,8 @@
 #define FALSE 0
 #define TRUE 1
 
+#define PRINT(msg, ptr) printf("[%p]: %s\n", ptr, msg)
+
 /*
 Programe un sistema batch que permita solicitar la ejecución asíncronade jobs
 por medio de la función submitJob y esperar hasta que un jobtermine con waitJob.
@@ -36,7 +38,7 @@ int mutex;
 como las 2 colas requeridas.
   */
 void initBatch(void) {
-    printf("initBatch\n");
+    // printf("initBatch\n");
     coresQueue = makeQueue();
     jobsQueue = makeQueue();
 
@@ -47,7 +49,7 @@ void initBatch(void) {
  * @brief Libere acá los recursos globales requeridos
  */
 void cleanBatch(void) {
-    printf("cleanBatch\n");
+    // printf("cleanBatch\n");
     destroyQueue(coresQueue);
     destroyQueue(jobsQueue);
 }
@@ -63,14 +65,13 @@ cores dedicados a atender jobs por orden de llegada.
   * @return Descriptor del job
   */
 Job *submitJob(JobFun fun, void *input) {
-    spinLock(&mutex);
-    printf("submitJob\n");
+    // printf("submitJob\n");
 
-    if (fun == NULL) {
-        printf("fun == NULL\n");
-    } else {
-        printf("fun != NULL\n");
-    }
+    // if (fun == NULL) {
+    //     printf("fun == NULL [Dentro de submitJob]\n");
+    // } else {
+    //     printf("fun != NULL [Dentro de submitJob]\n");
+    // }
 
     Job *job = malloc(sizeof(Job));
     job->f = fun;
@@ -78,18 +79,19 @@ Job *submitJob(JobFun fun, void *input) {
     job->result = NULL;
     job->spinLock = CLOSED;
 
+    spinLock(&mutex);
     put(jobsQueue, job);
 
     // printf("jobsQueue: %p\n", jobsQueue);
 
     if (queueLength(coresQueue) > 0) {
-        printf("largo de la cola de cores: %d\n", queueLength(coresQueue));
+        // printf("largo de la cola de cores: %d\n", queueLength(coresQueue));
         int *core = get(coresQueue);
-        printf("core tomado: %d\n", *core);
+        // printf("core tomado: %d\n", *core);
         // se despierta al core que estaba en espera de ese job
         spinUnlock(core);
     } else {
-        printf("cola de servers vacia\n");
+        // printf("cola de servers vacia\n");
         spinUnlock(&mutex);
     }
 
@@ -111,16 +113,11 @@ waitJob asociado
   * @return Resultado de la invocación de f
   */
 void *waitJob(Job *job) {
-    printf("waitJob\n");
+    // printf("waitJob\n");
     spinLock(&job->spinLock);
     void *result = job->result;
+    free(job);
     // printf("result: %p\n", result);
-    if (job->f != NULL) {
-        printf("job->f != NULL [Dentro de waitJob]\n");
-        free(job);
-    } else {
-        printf("job->f == NULL [Dentro de waitJob]\n");
-    }
 
     return result;
 }
@@ -142,42 +139,36 @@ batchServerFun.
   */
 void batchServerFun(void) {
     while (TRUE) {
-        printf("batchServerFun\n");
-        printf("queueLength(jobsQueue): %d [Al inicio de batchServerFun]\n",
-               queueLength(jobsQueue));
-
         spinLock(&mutex);
         if (queueLength(jobsQueue) == 0) {
             int spinLockCore = CLOSED;
 
-            printf("spinLockCore: %d\n", spinLockCore);
+            // PRINT("queueLength == 0", (void *) &spinLockCore);
             put(coresQueue, &spinLockCore);
-            printf("queueLength(coresQueue): %d [Dentro de batchServerFun]\n",
-                   queueLength(coresQueue));
+            // PRINT("queueLength after put", (void *) &spinLockCore);
 
             // esperar hasta que la llegada de un job lo despierte
             spinUnlock(&mutex);
             spinLock(&spinLockCore);
         }
 
-        printf("queueLength(jobsQueue): %d\n", queueLength(jobsQueue));
-
         spinUnlock(&mutex);
 
         Job *job = get(jobsQueue);
-        printf("job->spinLock: %d\n", job->spinLock);
+        // printf("job->spinLock: %d\n", job->spinLock);
+        if (job == NULL) {
+            return;
+        }
 
         if (job->f == NULL) {
-            printf("job->f == NULL\n");
+            // printf("job->f == NULL [Dentro de batchServerFun]\n");
             free(job);
             return;
         }
 
-        printf("ejecutando job\n");
         job->result = job->f(job->ptr);
-        // printf("job->result: %p\n", job->result);
+
         // se despierta al core que estaba en espera de ese job
         spinUnlock(&job->spinLock);
-
     }
 }
