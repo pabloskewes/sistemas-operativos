@@ -1,0 +1,324 @@
+Sistema operativo utilizado
+Linux pabloskewes-Inspiron-5505 6.2.0-36-generic #37~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Mon Oct  9 15:34:04 UTC 2 x86_64 x86_64 x86_64 GNU/Linux
+==== run-san ====
+gcc -g -DSAN=1 -fsanitize=address -fsanitize=undefined -Wall -Werror -pedantic -std=c18  test-batch.c batch.c pss.c spinlocks.c swap-x86_64.s -lm -lpthread -o batch.bin-san
+./batch.bin-san
+Prueba con spinlocks implementados con mutex sin busywaiting
+Test secuencial: 1 solo job a la vez
+Tiempo transcurrido: 1201 milisegundos
+
+Deteniendo el sistema batch
+----------------------------------------
+
+Test paralelo: 2 jobs simultaneos
+Tiempo transcurrido: 800 milisegundos
+----------------------------------------
+
+Test paralelo: 100 jobs y 10 threads
+Tiempo transcurrido: 4003 milisegundos
+----------------------------------------
+
+Test del orden de llegada: 10 jobs separados por 400 milisegundos
+Tiempo transcurrido: 8003 milisegundos
+----------------------------------------
+
+Cada '.' corresponde a 1000 jobs lanzados
+Cada ':' corresponde a 1000 jobs terminados
+Cada '-' corresponde a 1000 waitJob completados
+El '$' corresponde a la llamada de stopBatch
+
+test de robustez con 4 threads y 50 jobs
+creando jobs
+
+esperando jobs
+$
+Tiempo transcurrido: 3 milisegundos
+test de robustez con 20 threads y 200 jobs
+creando jobs
+
+esperando jobs
+$
+Tiempo transcurrido: 15 milisegundos
+test de robustez con 40 threads y 1000 jobs
+creando jobs
+:.-
+esperando jobs
+$
+Tiempo transcurrido: 34 milisegundos
+
+===============================================
+Prueba con spinlocks verdaderos con busywaiting
+===============================================
+
+Test secuencial: 1 solo job a la vez
+Tiempo transcurrido: 1200 milisegundos
+
+Deteniendo el sistema batch
+----------------------------------------
+
+Test paralelo: 2 jobs simultaneos
+Tiempo transcurrido: 800 milisegundos
+----------------------------------------
+
+Test paralelo: 100 jobs y 10 threads
+Tiempo transcurrido: 4014 milisegundos
+----------------------------------------
+
+Test del orden de llegada: 10 jobs separados por 400 milisegundos
+Tiempo transcurrido: 8001 milisegundos
+----------------------------------------
+
+Cada '.' corresponde a 1000 jobs lanzados
+Cada ':' corresponde a 1000 jobs terminados
+Cada '-' corresponde a 1000 waitJob completados
+El '$' corresponde a la llamada de stopBatch
+
+test de robustez con 4 threads y 50 jobs
+creando jobs
+
+esperando jobs
+$
+Tiempo transcurrido: 34 milisegundos
+test de robustez con 20 threads y 200 jobs
+creando jobs
+$
+esperando jobs
+
+Tiempo transcurrido: 958 milisegundos
+test de robustez con 40 threads y 1000 jobs
+creando jobs
+:.$-
+esperando jobs
+
+Tiempo transcurrido: 2346 milisegundos
+Felicitaciones.  Su tarea paso todos los tests
+==== run-thr ====
+gcc -g -DSAN=1 -DSANTHR -fsanitize=thread -Wall -Werror -pedantic -std=c18  test-batch.c batch.c pss.c spinlocks.c swap-x86_64.s -lm -lpthread -o batch.bin-thr
+./batch.bin-thr sin busy waiting
+Prueba con spinlocks implementados con mutex sin busywaiting
+Test secuencial: 1 solo job a la vez
+Tiempo transcurrido: 1202 milisegundos
+
+Deteniendo el sistema batch
+----------------------------------------
+
+Test paralelo: 2 jobs simultaneos
+Tiempo transcurrido: 801 milisegundos
+----------------------------------------
+
+Test paralelo: 100 jobs y 10 threads
+Tiempo transcurrido: 4003 milisegundos
+----------------------------------------
+
+Test del orden de llegada: 10 jobs separados por 400 milisegundos
+Tiempo transcurrido: 8004 milisegundos
+----------------------------------------
+
+Cada '.' corresponde a 1000 jobs lanzados
+Cada ':' corresponde a 1000 jobs terminados
+Cada '-' corresponde a 1000 waitJob completados
+El '$' corresponde a la llamada de stopBatch
+
+test de robustez con 4 threads y 50 jobs
+creando jobs
+
+esperando jobs
+$
+Tiempo transcurrido: 17 milisegundos
+test de robustez con 20 threads y 200 jobs
+creando jobs
+
+esperando jobs
+$
+Tiempo transcurrido: 60 milisegundos
+test de robustez con 40 threads y 1000 jobs
+creando jobs
+:.-
+esperando jobs
+$
+Tiempo transcurrido: 102 milisegundos
+Felicitaciones.  Su tarea paso todos los tests
+==== run-g ====
+gcc -g -Wall -Werror -pedantic -std=c18  test-batch.c batch.c pss.c spinlocks.c swap-x86_64.s -lm -lpthread -o batch.bin-g
+./batch.bin-g
+Prueba con spinlocks implementados con mutex sin busywaiting
+Test secuencial: 1 solo job a la vez
+Tiempo transcurrido: 1201 milisegundos
+
+Deteniendo el sistema batch
+----------------------------------------
+
+Test paralelo: 2 jobs simultaneos
+Tiempo transcurrido: 801 milisegundos
+----------------------------------------
+
+Test paralelo: 100 jobs y 10 threads
+Tiempo transcurrido: 4002 milisegundos
+----------------------------------------
+
+Test del orden de llegada: 10 jobs separados por 400 milisegundos
+Tiempo transcurrido: 8001 milisegundos
+----------------------------------------
+
+Cada '.' corresponde a 1000 jobs lanzados
+Cada ':' corresponde a 1000 jobs terminados
+Cada '-' corresponde a 1000 waitJob completados
+El '$' corresponde a la llamada de stopBatch
+
+test de robustez con 4 threads y 50 jobs
+creando jobs
+$
+esperando jobs
+
+Tiempo transcurrido: 201 milisegundos
+test de robustez con 20 threads y 200 jobs
+creando jobs
+$
+esperando jobs
+
+Tiempo transcurrido: 105 milisegundos
+test de robustez con 40 threads y 1000 jobs
+creando jobs
+:$.-
+esperando jobs
+
+Tiempo transcurrido: 216 milisegundos
+
+===============================================
+Prueba con spinlocks verdaderos con busywaiting
+===============================================
+
+Test secuencial: 1 solo job a la vez
+Tiempo transcurrido: 1200 milisegundos
+
+Deteniendo el sistema batch
+----------------------------------------
+
+Test paralelo: 2 jobs simultaneos
+Tiempo transcurrido: 800 milisegundos
+----------------------------------------
+
+Test paralelo: 100 jobs y 10 threads
+Tiempo transcurrido: 4011 milisegundos
+----------------------------------------
+
+Test del orden de llegada: 10 jobs separados por 400 milisegundos
+Tiempo transcurrido: 8001 milisegundos
+----------------------------------------
+
+Cada '.' corresponde a 1000 jobs lanzados
+Cada ':' corresponde a 1000 jobs terminados
+Cada '-' corresponde a 1000 waitJob completados
+El '$' corresponde a la llamada de stopBatch
+
+test de robustez con 4 threads y 50 jobs
+creando jobs
+$
+esperando jobs
+
+Tiempo transcurrido: 201 milisegundos
+test de robustez con 20 threads y 200 jobs
+creando jobs
+$
+esperando jobs
+
+Tiempo transcurrido: 916 milisegundos
+test de robustez con 40 threads y 1000 jobs
+creando jobs
+:$.-
+esperando jobs
+
+Tiempo transcurrido: 3664 milisegundos
+Felicitaciones.  Su tarea paso todos los tests
+==== run ====
+gcc -O -DOPT=1 -Wall -Werror -pedantic -std=c18  test-batch.c batch.c pss.c spinlocks.c swap-x86_64.s -lm -lpthread -o batch.bin
+./batch.bin
+Prueba con spinlocks implementados con mutex sin busywaiting
+Test secuencial: 1 solo job a la vez
+Tiempo transcurrido: 1201 milisegundos
+
+Deteniendo el sistema batch
+----------------------------------------
+
+Test paralelo: 2 jobs simultaneos
+Tiempo transcurrido: 801 milisegundos
+----------------------------------------
+
+Test paralelo: 100 jobs y 10 threads
+Tiempo transcurrido: 4003 milisegundos
+----------------------------------------
+
+Test del orden de llegada: 10 jobs separados por 400 milisegundos
+Tiempo transcurrido: 8002 milisegundos
+----------------------------------------
+
+Cada '.' corresponde a 1000 jobs lanzados
+Cada ':' corresponde a 1000 jobs terminados
+Cada '-' corresponde a 1000 waitJob completados
+El '$' corresponde a la llamada de stopBatch
+
+test de robustez con 4 threads y 50 jobs
+creando jobs
+
+esperando jobs
+$
+Tiempo transcurrido: 1 milisegundos
+test de robustez con 20 threads y 200 jobs
+creando jobs
+$
+esperando jobs
+
+Tiempo transcurrido: 104 milisegundos
+test de robustez con 40 threads y 1000 jobs
+creando jobs
+:$.-
+esperando jobs
+
+Tiempo transcurrido: 207 milisegundos
+
+===============================================
+Prueba con spinlocks verdaderos con busywaiting
+===============================================
+
+Test secuencial: 1 solo job a la vez
+Tiempo transcurrido: 1200 milisegundos
+
+Deteniendo el sistema batch
+----------------------------------------
+
+Test paralelo: 2 jobs simultaneos
+Tiempo transcurrido: 800 milisegundos
+----------------------------------------
+
+Test paralelo: 100 jobs y 10 threads
+Tiempo transcurrido: 4017 milisegundos
+----------------------------------------
+
+Test del orden de llegada: 10 jobs separados por 400 milisegundos
+Tiempo transcurrido: 8001 milisegundos
+----------------------------------------
+
+Cada '.' corresponde a 1000 jobs lanzados
+Cada ':' corresponde a 1000 jobs terminados
+Cada '-' corresponde a 1000 waitJob completados
+El '$' corresponde a la llamada de stopBatch
+
+test de robustez con 4 threads y 50 jobs
+creando jobs
+$
+esperando jobs
+
+Tiempo transcurrido: 204 milisegundos
+test de robustez con 20 threads y 200 jobs
+creando jobs
+$
+esperando jobs
+
+Tiempo transcurrido: 962 milisegundos
+test de robustez con 40 threads y 1000 jobs
+creando jobs
+:.$-
+esperando jobs
+
+Tiempo transcurrido: 3640 milisegundos
+Felicitaciones.  Su tarea paso todos los tests

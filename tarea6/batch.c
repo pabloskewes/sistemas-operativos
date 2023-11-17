@@ -67,12 +67,6 @@ cores dedicados a atender jobs por orden de llegada.
 Job *submitJob(JobFun fun, void *input) {
     // printf("submitJob\n");
 
-    // if (fun == NULL) {
-    //     printf("fun == NULL [Dentro de submitJob]\n");
-    // } else {
-    //     printf("fun != NULL [Dentro de submitJob]\n");
-    // }
-
     Job *job = malloc(sizeof(Job));
     job->f = fun;
     job->ptr = input;
@@ -152,9 +146,9 @@ void batchServerFun(void) {
             spinLock(&spinLockCore);
         }
 
-        spinUnlock(&mutex);
-
         Job *job = get(jobsQueue);
+
+        spinUnlock(&mutex);
         // printf("job->spinLock: %d\n", job->spinLock);
         if (job == NULL) {
             return;
