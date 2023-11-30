@@ -17,9 +17,9 @@ MODULE_LICENSE("Dual BSD/GPL");
 static int cdown_open(struct inode *inode, struct file *filp);
 static int cdown_release(struct inode *inode, struct file *filp);
 static ssize_t cdown_read(struct file *filp, char *buf, size_t count,
-                           loff_t *f_pos);
+                          loff_t *f_pos);
 static ssize_t cdown_write(struct file *filp, const char *buf, size_t count,
-                            loff_t *f_pos);
+                           loff_t *f_pos);
 void cdown_exit(void);
 int cdown_init(void);
 
@@ -40,7 +40,7 @@ module_exit(cdown_exit);
 /* Major number */
 static int cdown_major = 61;
 /* Buffer to store data */
-#define MAX_SIZE 8192
+#define KBUF_SIZE 20
 static char *cdown_buffer;
 static ssize_t curr_size;
 static struct semaphore mutex;
@@ -60,12 +60,12 @@ int cdown_init(void) {
     sema_init(&write_mutex, 1);
 
     /* Allocating cdown for the buffer */
-    cdown_buffer = kmalloc(MAX_SIZE, GFP_KERNEL);
+    cdown_buffer = kmalloc(KBUF_SIZE, GFP_KERNEL);
     if (!cdown_buffer) {
         result = -ENOMEM;
         goto fail;
     }
-    memset(cdown_buffer, 0, MAX_SIZE);
+    memset(cdown_buffer, 0, KBUF_SIZE);
     curr_size = 0;
 
     printk("<1>Inserting cdown module\n");
@@ -116,7 +116,7 @@ static int cdown_release(struct inode *inode, struct file *filp) {
 }
 
 static ssize_t cdown_read(struct file *filp, char *buf, size_t count,
-                           loff_t *f_pos) {
+                          loff_t *f_pos) {
     ssize_t rc;
     down(&mutex);
 
@@ -142,7 +142,7 @@ epilog:
 }
 
 static ssize_t cdown_write(struct file *filp, const char *buf, size_t count,
-                            loff_t *f_pos) {
+                           loff_t *f_pos) {
 
     ssize_t rc;
     loff_t last;
@@ -150,8 +150,8 @@ static ssize_t cdown_write(struct file *filp, const char *buf, size_t count,
     down(&mutex);
 
     last = *f_pos + count;
-    if (last > MAX_SIZE) {
-        count -= last - MAX_SIZE;
+    if (last > KBUF_SIZE) {
+        count -= last - KBUF_SIZE;
     }
     printk("<1>write %d bytes at %d\n", (int)count, (int)*f_pos);
 

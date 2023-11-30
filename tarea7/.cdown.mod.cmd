@@ -1,0 +1,1 @@
+cmd_/home/pabloskewes/FCFM/SistemasOperativos/sistemas-operativos/tarea7/cdown.mod := printf '%s\n'   cdown.o | awk '!x[$$0]++ { print("/home/pabloskewes/FCFM/SistemasOperativos/sistemas-operativos/tarea7/"$$0) }' > /home/pabloskewes/FCFM/SistemasOperativos/sistemas-operativos/tarea7/cdown.mod

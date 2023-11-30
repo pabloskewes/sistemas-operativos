@@ -72,12 +72,12 @@ int pipe_init(void) {
   c_init(&cond);
 
   /* Allocating pipe_buffer */
-  pipe_buffer = kmalloc(MAX_SIZE, GFP_KERNEL);
+  pipe_buffer = kmalloc(KBUF_SIZE, GFP_KERNEL);
   if (pipe_buffer==NULL) {
     pipe_exit();
     return -ENOMEM;
   }
-  memset(pipe_buffer, 0, MAX_SIZE);
+  memset(pipe_buffer, 0, KBUF_SIZE);
 
   printk("<1>Inserting pipe module\n");
   return 0;
@@ -137,7 +137,7 @@ static ssize_t pipe_read(struct file *filp, char *buf,
     }
     printk("<1>read byte %c (%d) from %d\n",
             pipe_buffer[out], pipe_buffer[out], out);
-    out= (out+1)%MAX_SIZE;
+    out= (out+1)%KBUF_SIZE;
     size--;
   }
 
@@ -155,7 +155,7 @@ static ssize_t pipe_write( struct file *filp, const char *buf,
   m_lock(&mutex);
 
   for (int k= 0; k<count; k++) {
-    while (size==MAX_SIZE) {
+    while (size==KBUF_SIZE) {
       /* si el buffer esta lleno, el escritor espera */
       if (c_wait(&cond, &mutex)) {
         printk("<1>write interrupted\n");
@@ -171,7 +171,7 @@ static ssize_t pipe_write( struct file *filp, const char *buf,
     }
     printk("<1>write byte %c (%d) at %d\n",
            pipe_buffer[in], pipe_buffer[in], in);
-    in= (in+1)%MAX_SIZE;
+    in= (in+1)%KBUF_SIZE;
     size++;
     c_broadcast(&cond);
   }

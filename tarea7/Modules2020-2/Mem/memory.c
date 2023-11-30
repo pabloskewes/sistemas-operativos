@@ -72,12 +72,12 @@ int memory_init(void) {
   sema_init(&write_mutex, 1);
 
   /* Allocating memory for the buffer */
-  memory_buffer = kmalloc(MAX_SIZE, GFP_KERNEL); 
+  memory_buffer = kmalloc(KBUF_SIZE, GFP_KERNEL); 
   if (!memory_buffer) { 
     result = -ENOMEM;
     goto fail; 
   } 
-  memset(memory_buffer, 0, MAX_SIZE);
+  memset(memory_buffer, 0, KBUF_SIZE);
   curr_size= 0;
 
   printk("<1>Inserting memory module\n"); 
@@ -163,8 +163,8 @@ static ssize_t memory_write( struct file *filp, const char *buf,
   down(&mutex);
 
   last= *f_pos + count;
-  if (last>MAX_SIZE) {
-    count -= last-MAX_SIZE;
+  if (last>KBUF_SIZE) {
+    count -= last-KBUF_SIZE;
   }
   printk("<1>write %d bytes at %d\n", (int)count, (int)*f_pos);
 

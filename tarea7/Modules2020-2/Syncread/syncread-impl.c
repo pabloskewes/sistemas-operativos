@@ -77,12 +77,12 @@ int syncread_init(void) {
   c_init(&cond);
 
   /* Allocating syncread_buffer */
-  syncread_buffer = kmalloc(MAX_SIZE, GFP_KERNEL);
+  syncread_buffer = kmalloc(KBUF_SIZE, GFP_KERNEL);
   if (syncread_buffer==NULL) {
     syncread_exit();
     return -ENOMEM;
   }
-  memset(syncread_buffer, 0, MAX_SIZE);
+  memset(syncread_buffer, 0, KBUF_SIZE);
 
   printk("<1>Inserting syncread module\n");
   return 0;
@@ -208,8 +208,8 @@ ssize_t syncread_write( struct file *filp, const char *buf,
   m_lock(&mutex);
 
   last= *f_pos + count;
-  if (last>MAX_SIZE) {
-    count -= last-MAX_SIZE;
+  if (last>KBUF_SIZE) {
+    count -= last-KBUF_SIZE;
   }
   printk("<1>write %d bytes at %d\n", (int)count, (int)*f_pos);
 

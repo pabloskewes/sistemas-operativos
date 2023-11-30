@@ -62,12 +62,12 @@ int multicast_init(void) {
   }
 
   /* Allocating multicast_buffer */
-  multicast_buffer = kmalloc(MAX_SIZE, GFP_KERNEL); 
+  multicast_buffer = kmalloc(KBUF_SIZE, GFP_KERNEL); 
   if (!multicast_buffer) { 
     rc = -ENOMEM;
     goto fail; 
   } 
-  memset(multicast_buffer, 0, MAX_SIZE);
+  memset(multicast_buffer, 0, KBUF_SIZE);
   curr_size= 0;
   curr_pos= 0;
   m_init(&mutex);
@@ -138,8 +138,8 @@ static ssize_t multicast_write( struct file *filp, const char *buf,
   ssize_t rc;
   m_lock(&mutex);
  
-  if (count>MAX_SIZE) {
-    count = MAX_SIZE;
+  if (count>KBUF_SIZE) {
+    count = KBUF_SIZE;
   }
   printk("<1>write %d bytes at %d (%p)\n", (int)count, (int)curr_pos, filp);
 
