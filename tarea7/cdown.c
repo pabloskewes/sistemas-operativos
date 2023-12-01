@@ -45,9 +45,12 @@ static char *cdown_buffer;
 static ssize_t curr_size;
 static struct semaphore mutex;
 static struct semaphore write_mutex;
+static int countDown;
 
 int cdown_init(void) {
     int result;
+
+    printk("<1> ============ INIT ============\n");
 
     /* Registering device */
     result = register_chrdev(cdown_major, "cdown", &cdown_fops);
@@ -61,12 +64,14 @@ int cdown_init(void) {
 
     /* Allocating cdown for the buffer */
     cdown_buffer = kmalloc(KBUF_SIZE, GFP_KERNEL);
+    // char cdown_buffer[KBUF_SIZE];
     if (!cdown_buffer) {
         result = -ENOMEM;
         goto fail;
     }
     memset(cdown_buffer, 0, KBUF_SIZE);
     curr_size = 0;
+    countDown = 0;
 
     printk("<1>Inserting cdown module\n");
     return 0;
@@ -99,6 +104,7 @@ static int cdown_open(struct inode *inode, struct file *filp) {
             return rc;
         }
         curr_size = 0;
+        countDown = 0;
     }
     printk("<1>open for %s\n", mode);
     /* Success */
@@ -120,11 +126,27 @@ static ssize_t cdown_read(struct file *filp, char *buf, size_t count,
     ssize_t rc;
     down(&mutex);
 
+    printk("<1>countDown at BEGIN of read: %d\n", countDown);
+
+    if (countDown == 0 || *f_pos != 0) {
+        printk("<1>End of file\n");
+        rc = 0;
+        goto epilog;
+    }
+
+    int len = snprintf(cdown_buffer, KBUF_SIZE, "%d\n", countDown);
+    printk("<1>len: %d\n", len);
+    printk("<1>count: %d\n", count);
+    if (count > len) {
+        count = len;
+    }
+
     if (count > curr_size - *f_pos) {
         count = curr_size - *f_pos;
     }
 
     printk("<1>read %d bytes at %d\n", (int)count, (int)*f_pos);
+    printk("<1>reading buffer: %s\n", cdown_buffer);
 
     /* Transfering data to user space */
     if (copy_to_user(buf, cdown_buffer + *f_pos, count) != 0) {
@@ -135,6 +157,7 @@ static ssize_t cdown_read(struct file *filp, char *buf, size_t count,
 
     *f_pos += count;
     rc = count;
+    countDown--;
 
 epilog:
     up(&mutex);
@@ -155,12 +178,27 @@ static ssize_t cdown_write(struct file *filp, const char *buf, size_t count,
     }
     printk("<1>write %d bytes at %d\n", (int)count, (int)*f_pos);
 
+    // if (count == 0) {
+    //     rc = 0;
+    //     goto epilog;
+    // }
+
+    // read input from user as int
+    rc = kstrtoint_from_user(buf, count, 10, &countDown);
+    if (rc) {
+        printk("<1>error reading input\n");
+        goto epilog;
+    }
+    printk("<1>countDown: %d\n", countDown);
+
     /* Transfering data from user space */
     if (copy_from_user(cdown_buffer + *f_pos, buf, count) != 0) {
         /* el valor de buf es una direccion invalida */
         rc = -EFAULT;
         goto epilog;
     }
+
+    printk("<1>writing buffer: %s\n", cdown_buffer);
 
     *f_pos += count;
     curr_size = *f_pos;
